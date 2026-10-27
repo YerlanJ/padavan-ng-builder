@@ -40,6 +40,7 @@ jobs:
       run: |
         git config --global --add safe.directory '*'
         git clone -b "${{ env.PADAVAN_BRANCH }}" "${{ env.PADAVAN_REPO }}" padavan-ng --depth=1
+        git -C padavan-ng fetch --depth=1 origin "${{ env.PADAVAN_COMMIT }}"
         git -C padavan-ng checkout "${{ env.PADAVAN_COMMIT }}"
 
         ARCH=""
@@ -62,7 +63,7 @@ jobs:
     - name: Build firmware
       run: |
         set +e
-        for cfg in $(ls configs.build/*.config); do
+        for cfg in configs.build/mi-r3gv2-uboot.config; do
             cp -f "$cfg" padavan-ng/trunk/.config
             echo "::group::Build $(basename "$cfg" .config)"
             echo "Waiting for the last 589 lines of logs (~10-20 minutes per config)..."
